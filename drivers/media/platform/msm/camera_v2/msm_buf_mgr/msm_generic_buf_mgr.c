@@ -549,10 +549,12 @@ static const struct v4l2_subdev_ops msm_buf_mngr_subdev_ops = {
 	.core = &msm_buf_mngr_subdev_core_ops,
 };
 
+/* RDD - UNUSED?
 static const struct of_device_id msm_buf_mngr_dt_match[] = {
 	{.compatible = "qcom,msm_buf_mngr"},
 	{}
 };
+*/
 
 static struct v4l2_file_operations msm_buf_v4l2_subdev_fops;
 

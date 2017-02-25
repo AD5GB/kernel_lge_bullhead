@@ -98,7 +98,7 @@ static int ghsic_ctrl_receive(void *dev, void *buf, size_t actual)
 	return retval;
 }
 
-static int
+	static int
 ghsic_send_cpkt_tomodem(u8 portno, void *buf, size_t len)
 {
 	void			*cbuf;
@@ -142,7 +142,7 @@ ghsic_send_cpkt_tomodem(u8 portno, void *buf, size_t len)
 	return 0;
 }
 
-static void
+	static void
 ghsic_send_cbits_tomodem(void *gptr, u8 portno, int cbits)
 {
 	struct gctrl_port	*port;
@@ -167,7 +167,7 @@ ghsic_send_cbits_tomodem(void *gptr, u8 portno, int cbits)
 		return;
 
 	pr_debug("%s: ctrl_tomodem:%d DTR:%d  RST:%d\n", __func__, cbits,
-		cbits & ACM_CTRL_DTR  ? 1 : 0, cbits & ACM_CTRL_RTS ? 1 : 0);
+			cbits & ACM_CTRL_DTR  ? 1 : 0, cbits & ACM_CTRL_RTS ? 1 : 0);
 
 	ctrl_bridge_set_cbits(port->brdg.ch_id, cbits);
 }
@@ -177,7 +177,7 @@ static void ghsic_ctrl_connect_w(struct work_struct *w)
 	struct gserial		*gser = NULL;
 	struct grmnet		*gr = NULL;
 	struct gctrl_port	*port =
-			container_of(w, struct gctrl_port, connect_w);
+		container_of(w, struct gctrl_port, connect_w);
 	unsigned long		flags;
 	int			retval;
 	unsigned		cbits;
@@ -269,7 +269,7 @@ int ghsic_ctrl_connect(void *gptr, int port_num)
 static void gctrl_disconnect_w(struct work_struct *w)
 {
 	struct gctrl_port	*port =
-			container_of(w, struct gctrl_port, disconnect_w);
+		container_of(w, struct gctrl_port, disconnect_w);
 
 	if (!test_bit(CH_OPENED, &port->bridge_sts))
 		return;
@@ -302,7 +302,7 @@ void ghsic_ctrl_disconnect(void *gptr, int port_num)
 
 	if (port->gtype == USB_GADGET_SERIAL)
 		gser = gptr;
-	 else
+	else
 		gr = gptr;
 
 	spin_lock_irqsave(&port->port_lock, flags);
@@ -327,14 +327,14 @@ static void ghsic_ctrl_status(void *ctxt, unsigned int ctrl_bits)
 	struct gserial		*gser;
 
 	pr_debug("%s - input control lines: dcd%c dsr%c break%c "
-		 "ring%c framing%c parity%c overrun%c\n", __func__,
-		 ctrl_bits & ACM_CTRL_DCD ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_DSR ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_BRK ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_RI  ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_FRAMING ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_PARITY ? '+' : '-',
-		 ctrl_bits & ACM_CTRL_OVERRUN ? '+' : '-');
+			"ring%c framing%c parity%c overrun%c\n", __func__,
+			ctrl_bits & ACM_CTRL_DCD ? '+' : '-',
+			ctrl_bits & ACM_CTRL_DSR ? '+' : '-',
+			ctrl_bits & ACM_CTRL_BRK ? '+' : '-',
+			ctrl_bits & ACM_CTRL_RI  ? '+' : '-',
+			ctrl_bits & ACM_CTRL_FRAMING ? '+' : '-',
+			ctrl_bits & ACM_CTRL_PARITY ? '+' : '-',
+			ctrl_bits & ACM_CTRL_OVERRUN ? '+' : '-');
 
 	port->cbits_tohost = ctrl_bits;
 	gser = port->port_usb;
@@ -544,7 +544,7 @@ int ghsic_ctrl_setup(unsigned int num_ports, enum gadget_type gtype)
 free_ports:
 	for (i = first_port_id; i < no_ctrl_ports; i++)
 		ghsic_ctrl_port_free(i);
-		no_ctrl_ports = first_port_id;
+	no_ctrl_ports = first_port_id;
 	return ret;
 }
 
@@ -600,7 +600,7 @@ static ssize_t gctrl_read_stats(struct file *file, char __user *ubuf,
 }
 
 static ssize_t gctrl_reset_stats(struct file *file,
-	const char __user *buf, size_t count, loff_t *ppos)
+		const char __user *buf, size_t count, loff_t *ppos)
 {
 	struct gctrl_port	*port;
 	int			i;
@@ -635,7 +635,7 @@ static void gctrl_debugfs_init(void)
 
 	gctrl_dfile =
 		debugfs_create_file("status", 0444, gctrl_dent, 0,
-			&gctrl_stats_ops);
+				&gctrl_stats_ops);
 	if (!gctrl_dfile || IS_ERR(gctrl_dfile))
 		debugfs_remove(gctrl_dent);
 }

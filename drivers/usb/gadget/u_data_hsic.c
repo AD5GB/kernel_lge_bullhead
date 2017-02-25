@@ -66,14 +66,14 @@ static unsigned int ghsic_data_fctrl_support = GHSIC_DATA_FLOW_CTRL_SUPPORT;
 module_param(ghsic_data_fctrl_support, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsic_data_fctrl_en_thld =
-		GHSIC_DATA_FLOW_CTRL_EN_THRESHOLD;
+GHSIC_DATA_FLOW_CTRL_EN_THRESHOLD;
 module_param(ghsic_data_fctrl_en_thld, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsic_data_fctrl_dis_thld = GHSIC_DATA_FLOW_CTRL_DISABLE;
 module_param(ghsic_data_fctrl_dis_thld, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsic_data_pend_limit_with_bridge =
-		GHSIC_DATA_PENDLIMIT_WITH_BRIDGE;
+GHSIC_DATA_PENDLIMIT_WITH_BRIDGE;
 module_param(ghsic_data_pend_limit_with_bridge, uint, S_IRUGO | S_IWUSR);
 
 #define CH_OPENED 0
@@ -188,7 +188,7 @@ static void ghsic_data_unthrottle_tx(void *ctx)
 
 	queue_work(port->wq, &port->write_tomdm_w);
 	pr_debug("%s: port num =%d unthrottled\n", __func__,
-		port->port_num);
+			port->port_num);
 }
 
 static void ghsic_data_write_tohost(struct work_struct *w)
@@ -248,8 +248,8 @@ static void ghsic_data_write_tohost(struct work_struct *w)
 		}
 		port->to_host++;
 		if (ghsic_data_fctrl_support &&
-			port->tx_skb_q.qlen <= ghsic_data_fctrl_dis_thld &&
-			test_and_clear_bit(RX_THROTTLED, &port->brdg.flags)) {
+				port->tx_skb_q.qlen <= ghsic_data_fctrl_dis_thld &&
+				test_and_clear_bit(RX_THROTTLED, &port->brdg.flags)) {
 			port->rx_unthrottled_cnt++;
 			port->unthrottled_pnd_skbs = port->tx_skb_q.qlen;
 			pr_debug_ratelimited("%s: disable flow ctrl:"
@@ -283,7 +283,7 @@ static int ghsic_data_receive(void *p, void *data, size_t len)
 		set_bit(RX_THROTTLED, &port->brdg.flags);
 		port->rx_throttled_cnt++;
 		pr_debug_ratelimited("%s: flow ctrl enabled: tx skbq len: %u\n",
-					__func__, port->tx_skb_q.qlen);
+				__func__, port->tx_skb_q.qlen);
 		spin_unlock_irqrestore(&port->tx_lock, flags);
 		queue_work(port->wq, &port->write_tohost_w);
 		return -EBUSY;
@@ -350,20 +350,20 @@ static void ghsic_data_epin_complete(struct usb_ep *ep, struct usb_request *req)
 	int			status = req->status;
 
 	switch (status) {
-	case 0:
-		/* successful completion */
-		dbg_timestamp("DL", skb);
-		break;
-	case -ECONNRESET:
-	case -ESHUTDOWN:
-		/* connection gone */
-		dev_kfree_skb_any(skb);
-		req->buf = 0;
-		usb_ep_free_request(ep, req);
-		return;
-	default:
-		pr_err("%s: data tx ep error %d\n", __func__, status);
-		break;
+		case 0:
+			/* successful completion */
+			dbg_timestamp("DL", skb);
+			break;
+		case -ECONNRESET:
+		case -ESHUTDOWN:
+			/* connection gone */
+			dev_kfree_skb_any(skb);
+			req->buf = 0;
+			usb_ep_free_request(ep, req);
+			return;
+		default:
+			pr_err("%s: data tx ep error %d\n", __func__, status);
+			break;
 	}
 
 	dev_kfree_skb_any(skb);
@@ -375,7 +375,7 @@ static void ghsic_data_epin_complete(struct usb_ep *ep, struct usb_request *req)
 	queue_work(port->wq, &port->write_tohost_w);
 }
 
-static void
+	static void
 ghsic_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct gdata_port	*port = ep->driver_data;
@@ -385,23 +385,23 @@ ghsic_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 	int			queue = 0;
 
 	switch (status) {
-	case 0:
-		skb_put(skb, req->actual);
-		queue = 1;
-		break;
-	case -ECONNRESET:
-	case -ESHUTDOWN:
-		/* cable disconnection */
-		dev_kfree_skb_any(skb);
-		req->buf = 0;
-		usb_ep_free_request(ep, req);
-		return;
-	default:
-		pr_err_ratelimited("%s: %s response error %d, %d/%d\n",
+		case 0:
+			skb_put(skb, req->actual);
+			queue = 1;
+			break;
+		case -ECONNRESET:
+		case -ESHUTDOWN:
+			/* cable disconnection */
+			dev_kfree_skb_any(skb);
+			req->buf = 0;
+			usb_ep_free_request(ep, req);
+			return;
+		default:
+			pr_err_ratelimited("%s: %s response error %d, %d/%d\n",
 					__func__, ep->name, status,
-				req->actual, req->length);
-		dev_kfree_skb_any(skb);
-		break;
+					req->actual, req->length);
+			dev_kfree_skb_any(skb);
+			break;
 	}
 
 	spin_lock(&port->rx_lock);
@@ -440,7 +440,7 @@ static void ghsic_data_start_rx(struct gdata_port *port)
 			break;
 
 		req = list_first_entry(&port->rx_idle,
-					struct usb_request, list);
+				struct usb_request, list);
 		list_del(&req->list);
 		spin_unlock_irqrestore(&port->rx_lock, flags);
 
@@ -492,10 +492,10 @@ static void ghsic_data_start_io(struct gdata_port *port)
 
 	if (ep_out) {
 		ret = ghsic_data_alloc_requests(ep_out,
-					&port->rx_idle,
-					port->rx_q_size,
-					ghsic_data_epout_complete,
-					&port->rx_lock);
+				&port->rx_idle,
+				port->rx_q_size,
+				ghsic_data_epout_complete,
+				&port->rx_lock);
 
 		pr_debug("%s: ret:%u\n", __func__, ret);
 
@@ -519,7 +519,7 @@ static void ghsic_data_start_io(struct gdata_port *port)
 	}
 
 	ret = ghsic_data_alloc_requests(ep_in, &port->tx_idle,
-		port->tx_q_size, ghsic_data_epin_complete, &port->tx_lock);
+			port->tx_q_size, ghsic_data_epin_complete, &port->tx_lock);
 	if (ret) {
 		pr_err("%s: tx req allocation failed\n", __func__);
 		spin_lock_irqsave(&port->rx_lock, flags);
@@ -540,7 +540,7 @@ static void ghsic_data_connect_w(struct work_struct *w)
 	int			ret;
 
 	if (!port || !atomic_read(&port->connected) ||
-		!test_bit(CH_READY, &port->bridge_sts))
+			!test_bit(CH_READY, &port->bridge_sts))
 		return;
 
 	pr_debug("%s: port:%p\n", __func__, port);
@@ -923,11 +923,11 @@ static void dbg_inc(unsigned *idx)
 }
 
 /**
-* dbg_timestamp - Stores timestamp values of a SKB life cycle
-*	to debug buffer
-* @event: "DL": Downlink Data
-* @skb: SKB used to store timestamp values to debug buffer
-*/
+ * dbg_timestamp - Stores timestamp values of a SKB life cycle
+ *	to debug buffer
+ * @event: "DL": Downlink Data
+ * @skb: SKB used to store timestamp values to debug buffer
+ */
 static void dbg_timestamp(char *event, struct sk_buff * skb)
 {
 	unsigned long		flags;
@@ -939,10 +939,10 @@ static void dbg_timestamp(char *event, struct sk_buff * skb)
 	write_lock_irqsave(&dbg_data.lck, flags);
 
 	scnprintf(dbg_data.buf[dbg_data.idx], DBG_DATA_MSG,
-		  "%p %u[%s] %u %u %u %u %u %u\n",
-		  skb, skb->len, event, info->created, info->rx_queued,
-		  info->rx_done, info->rx_done_sent, info->tx_queued,
-		  get_timestamp());
+			"%p %u[%s] %u %u %u %u %u %u\n",
+			skb, skb->len, event, info->created, info->rx_queued,
+			info->rx_done, info->rx_done_sent, info->tx_queued,
+			get_timestamp());
 
 	dbg_inc(&dbg_data.idx);
 
@@ -973,7 +973,7 @@ static ssize_t show_timestamp(struct file *file, char __user *ubuf,
 		if (!strnlen(dbg_data.buf[i], DBG_DATA_MSG))
 			continue;
 		j += scnprintf(buf + j, DEBUG_DATA_BUF_SIZE - j,
-			       "%s\n", dbg_data.buf[i]);
+				"%s\n", dbg_data.buf[i]);
 	}
 
 	read_unlock_irqrestore(&dbg_data.lck, flags);
@@ -990,7 +990,7 @@ const struct file_operations gdata_timestamp_ops = {
 };
 
 static ssize_t ghsic_data_read_stats(struct file *file,
-	char __user *ubuf, size_t count, loff_t *ppos)
+		char __user *ubuf, size_t count, loff_t *ppos)
 {
 	struct gdata_port	*port;
 	struct platform_driver	*pdrv;
@@ -1062,7 +1062,7 @@ static ssize_t ghsic_data_read_stats(struct file *file,
 }
 
 static ssize_t ghsic_data_reset_stats(struct file *file,
-	const char __user *buf, size_t count, loff_t *ppos)
+		const char __user *buf, size_t count, loff_t *ppos)
 {
 	struct gdata_port	*port;
 	int			i;
@@ -1113,9 +1113,9 @@ static void ghsic_data_debugfs_init(void)
 	}
 
 	gdata_dfile_tstamp = debugfs_create_file("timestamp", 0644, gdata_dent,
-				0, &gdata_timestamp_ops);
-		if (!gdata_dfile_tstamp || IS_ERR(gdata_dfile_tstamp))
-			debugfs_remove(gdata_dent);
+			0, &gdata_timestamp_ops);
+	if (!gdata_dfile_tstamp || IS_ERR(gdata_dfile_tstamp))
+		debugfs_remove(gdata_dent);
 }
 
 static void ghsic_data_debugfs_exit(void)
@@ -1196,7 +1196,7 @@ int ghsic_data_setup(unsigned num_ports, enum gadget_type gtype)
 free_ports:
 	for (i = first_port_id; i < no_data_ports; i++)
 		ghsic_data_port_free(i);
-		no_data_ports = first_port_id;
+	no_data_ports = first_port_id;
 
 	return ret;
 }

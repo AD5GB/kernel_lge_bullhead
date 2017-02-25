@@ -77,52 +77,52 @@ static void smux_control_event(void *priv, int event_type, const void *metadata)
 	size_t			len;
 
 	switch (event_type) {
-	case SMUX_LOCAL_CLOSED:
-		clear_bit(CH_OPENED, &port->channel_sts);
-		complete(&port->close_complete);
-		break;
-	case SMUX_CONNECTED:
-		spin_lock_irqsave(&port->port_lock, flags);
-		if (!port->port_usb) {
+		case SMUX_LOCAL_CLOSED:
+			clear_bit(CH_OPENED, &port->channel_sts);
+			complete(&port->close_complete);
+			break;
+		case SMUX_CONNECTED:
+			spin_lock_irqsave(&port->port_lock, flags);
+			if (!port->port_usb) {
+				spin_unlock_irqrestore(&port->port_lock, flags);
+				return;
+			}
 			spin_unlock_irqrestore(&port->port_lock, flags);
-			return;
-		}
-		spin_unlock_irqrestore(&port->port_lock, flags);
-		set_bit(CH_CONNECTED, &port->channel_sts);
-		if (port->gtype == USB_GADGET_RMNET) {
-			gr = port->port_usb;
-			if (gr && gr->connect)
-				gr->connect(gr);
-		}
-		break;
-	case SMUX_DISCONNECTED:
-		clear_bit(CH_CONNECTED, &port->channel_sts);
-		break;
-	case SMUX_READ_DONE:
-		len = ((struct smux_meta_read *)metadata)->len;
-		buf = ((struct smux_meta_read *)metadata)->buffer;
-		ghsuart_ctrl_receive(port, buf, len);
-		break;
-	case SMUX_READ_FAIL:
-		buf = ((struct smux_meta_read *)metadata)->buffer;
-		kfree(buf);
-		break;
-	case SMUX_WRITE_DONE:
-	case SMUX_WRITE_FAIL:
-		buf = ((struct smux_meta_write *)metadata)->buffer;
-		kfree(buf);
-		break;
-	case SMUX_LOW_WM_HIT:
-	case SMUX_HIGH_WM_HIT:
-	case SMUX_TIOCM_UPDATE:
-		break;
-	default:
-		pr_err("%s Event %d not supported\n", __func__, event_type);
+			set_bit(CH_CONNECTED, &port->channel_sts);
+			if (port->gtype == USB_GADGET_RMNET) {
+				gr = port->port_usb;
+				if (gr && gr->connect)
+					gr->connect(gr);
+			}
+			break;
+		case SMUX_DISCONNECTED:
+			clear_bit(CH_CONNECTED, &port->channel_sts);
+			break;
+		case SMUX_READ_DONE:
+			len = ((struct smux_meta_read *)metadata)->len;
+			buf = ((struct smux_meta_read *)metadata)->buffer;
+			ghsuart_ctrl_receive(port, buf, len);
+			break;
+		case SMUX_READ_FAIL:
+			buf = ((struct smux_meta_read *)metadata)->buffer;
+			kfree(buf);
+			break;
+		case SMUX_WRITE_DONE:
+		case SMUX_WRITE_FAIL:
+			buf = ((struct smux_meta_write *)metadata)->buffer;
+			kfree(buf);
+			break;
+		case SMUX_LOW_WM_HIT:
+		case SMUX_HIGH_WM_HIT:
+		case SMUX_TIOCM_UPDATE:
+			break;
+		default:
+			pr_err("%s Event %d not supported\n", __func__, event_type);
 	};
 }
 
 static int rx_control_buffer(void *priv, void **pkt_priv, void **buffer,
-			int size)
+		int size)
 {
 	void *rx_buf;
 
@@ -152,7 +152,7 @@ static int ghsuart_ctrl_receive(void *dev, void *buf, size_t actual)
 	return retval;
 }
 
-static int
+	static int
 ghsuart_send_cpkt_tomodem(u8 portno, void *buf, size_t len)
 {
 	void			*cbuf;
@@ -195,7 +195,7 @@ ghsuart_send_cpkt_tomodem(u8 portno, void *buf, size_t len)
 	return 0;
 }
 
-static void
+	static void
 ghsuart_send_cbits_tomodem(void *gptr, u8 portno, int cbits)
 {
 	struct ghsuart_ctrl_port	*port;
@@ -227,7 +227,7 @@ ghsuart_send_cbits_tomodem(void *gptr, u8 portno, int cbits)
 static void ghsuart_ctrl_connect_w(struct work_struct *w)
 {
 	struct ghsuart_ctrl_port	*port =
-			container_of(w, struct ghsuart_ctrl_port, connect_w);
+		container_of(w, struct ghsuart_ctrl_port, connect_w);
 	int			retval;
 
 	if (!port || !test_bit(CH_READY, &port->channel_sts))
@@ -244,7 +244,7 @@ static void ghsuart_ctrl_connect_w(struct work_struct *w)
 		}
 	}
 	retval = msm_smux_open(port->ch_id, port->ctxt, smux_control_event,
-				rx_control_buffer);
+			rx_control_buffer);
 	if (retval < 0) {
 		pr_err(" %s smux_open failed\n", __func__);
 		return;
@@ -294,7 +294,7 @@ int ghsuart_ctrl_connect(void *gptr, int port_num)
 static void ghsuart_ctrl_disconnect_w(struct work_struct *w)
 {
 	struct ghsuart_ctrl_port	*port =
-			container_of(w, struct ghsuart_ctrl_port, disconnect_w);
+		container_of(w, struct ghsuart_ctrl_port, disconnect_w);
 
 	if (!test_bit(CH_OPENED, &port->channel_sts))
 		return;
@@ -411,7 +411,7 @@ static int ghsuart_ctrl_port_alloc(int portno, enum gadget_type gtype)
 	port->wq = create_singlethread_workqueue(ghsuart_ctrl_names[portno]);
 	if (!port->wq) {
 		pr_err("%s: Unable to create workqueue:%s\n",
-			__func__, ghsuart_ctrl_names[portno]);
+				__func__, ghsuart_ctrl_names[portno]);
 		kfree(port);
 		return -ENOMEM;
 	}
@@ -475,7 +475,7 @@ int ghsuart_ctrl_setup(unsigned int num_ports, enum gadget_type gtype)
 free_ports:
 	for (i = first_port_id; i < num_ctrl_ports; i++)
 		ghsuart_ctrl_port_free(i);
-		num_ctrl_ports = first_port_id;
+	num_ctrl_ports = first_port_id;
 	return ret;
 }
 
@@ -523,7 +523,7 @@ static ssize_t ghsuart_ctrl_read_stats(struct file *file, char __user *ubuf,
 }
 
 static ssize_t ghsuart_ctrl_reset_stats(struct file *file,
-	const char __user *buf, size_t count, loff_t *ppos)
+		const char __user *buf, size_t count, loff_t *ppos)
 {
 	struct ghsuart_ctrl_port	*port;
 	int			i;

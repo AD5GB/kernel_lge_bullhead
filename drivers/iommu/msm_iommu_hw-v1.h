@@ -72,11 +72,19 @@
 #define GET_FIELD_Q(addr, mask, shift) \
 	((readq_relaxed(addr) >> (shift)) & (mask))
 
+/* RDD - LINARO 6
 #define SET_FIELD(addr, mask, shift, v) \
 do { \
 	int t = readl_relaxed(addr); \
 	writel_relaxed((t & ~((mask) << (shift))) + (((v) & \
 			(mask)) << (shift)), addr); \
+} while (0)
+*/
+#define SET_FIELD(addr, mask, shift, v) \
+do { \
+	int t = readl_relaxed(addr); \
+	writel_relaxed((t & ~((s64)(mask) << (shift))) + (((v) & \
+			(s64)(mask)) << (shift)), addr); \
 } while (0)
 
 #define SET_FIELD_Q(addr, mask, shift, v) \

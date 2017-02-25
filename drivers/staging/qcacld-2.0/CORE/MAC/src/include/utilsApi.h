@@ -111,10 +111,10 @@ void sirDumpBuf(tpAniSirGlobal pMac, tANI_U8 modId, tANI_U32 level, tANI_U8 *buf
  * @return        Swapped tANI_U16 value
  */
 
-static inline tANI_U16
+	static inline tANI_U16
 sirSwapU16(tANI_U16 val)
 {
-    return(((val & 0x00FF) << 8) | ((val & 0xFF00) >> 8));
+	return(((val & 0x00FF) << 8) | ((val & 0xFF00) >> 8));
 }/*** end sirSwapU16() ***/
 
 // --------------------------------------------------------------------
@@ -137,13 +137,13 @@ sirSwapU16(tANI_U16 val)
  * @return        Swapped tANI_U16 value
  */
 
-static inline tANI_U16
+	static inline tANI_U16
 sirSwapU16ifNeeded(tANI_U16 val)
 {
 #ifndef ANI_LITTLE_BYTE_ENDIAN
-    return sirSwapU16(val);
+	return sirSwapU16(val);
 #else
-    return val;
+	return val;
 #endif
 }/*** end sirSwapU16ifNeeded() ***/
 
@@ -165,13 +165,13 @@ sirSwapU16ifNeeded(tANI_U16 val)
  * @return        Swapped tANI_U32 value
  */
 
-static inline tANI_U32
+	static inline tANI_U32
 sirSwapU32(tANI_U32 val)
 {
-    return((val << 24) |
-           (val >> 24) |
-           ((val & 0x0000FF00) << 8) |
-           ((val & 0x00FF0000) >> 8));
+	return((val << 24) |
+			(val >> 24) |
+			((val & 0x0000FF00) << 8) |
+			((val & 0x00FF0000) >> 8));
 }/*** end sirSwapU32() ***/
 
 // --------------------------------------------------------------------
@@ -194,13 +194,13 @@ sirSwapU32(tANI_U32 val)
  * @return        Swapped tANI_U32 value
  */
 
-static inline tANI_U32
+	static inline tANI_U32
 sirSwapU32ifNeeded(tANI_U32 val)
 {
 #ifndef ANI_LITTLE_BYTE_ENDIAN
-    return sirSwapU32(val);
+	return sirSwapU32(val);
 #else
-    return val;
+	return val;
 #endif
 }/*** end sirSwapU32ifNeeded() ***/
 
@@ -226,13 +226,13 @@ sirSwapU32ifNeeded(tANI_U32 val)
  *
  */
 
-static inline void
+	static inline void
 sirSwapU32Buf(tANI_U32 *ptr, tANI_U32 nWords)
 {
-    tANI_U32     i;
+	tANI_U32     i;
 
-    for (i=0; i < nWords; i++)
-        ptr[i] = sirSwapU32(ptr[i]);
+	for (i=0; i < nWords; i++)
+		ptr[i] = sirSwapU32(ptr[i]);
 }
 
 // --------------------------------------------------------------------
@@ -256,11 +256,11 @@ sirSwapU32Buf(tANI_U32 *ptr, tANI_U32 nWords)
  * @return        void
  */
 
-static inline void
+	static inline void
 sirSwapU32BufIfNeeded(tANI_U32* pBuf, tANI_U32 nWords)
 {
 #ifdef ANI_LITTLE_BYTE_ENDIAN
-    sirSwapU32Buf(pBuf, nWords);
+	sirSwapU32Buf(pBuf, nWords);
 #endif
 }/*** end sirSwapU32ifNeeded() ***/
 
@@ -283,11 +283,11 @@ sirSwapU32BufIfNeeded(tANI_U32* pBuf, tANI_U32 nWords)
  * @return        void
  */
 
-static inline void
+	static inline void
 sirSwapBDIfNeeded(tANI_U32 *pBd)
 {
-    sirSwapU32BufIfNeeded(pBd, 6);
-    sirSwapU32BufIfNeeded(pBd+18, 14);
+	sirSwapU32BufIfNeeded(pBd, 6);
+	sirSwapU32BufIfNeeded(pBd+18, 14);
 }
 
 
@@ -311,11 +311,11 @@ sirSwapBDIfNeeded(tANI_U32 *pBd)
  * @return None
  */
 
-static inline void
+	static inline void
 sirStoreU16N(tANI_U8 *ptr, tANI_U16 val)
 {
-    *ptr++ = (val >> 8) & 0xff;
-    *ptr = val & 0xff;
+	*ptr++ = (val >> 8) & 0xff;
+	*ptr = val & 0xff;
 }
 
 // -------------------------------------------------------------------
@@ -338,13 +338,13 @@ sirStoreU16N(tANI_U8 *ptr, tANI_U16 val)
  * @return None
  */
 
-static inline void
+	static inline void
 sirStoreU32N(tANI_U8 *ptr, tANI_U32 val)
 {
-    *ptr++ = (tANI_U8) (val >> 24) & 0xff;
-    *ptr++ = (tANI_U8) (val >> 16) & 0xff;
-    *ptr++ = (tANI_U8) (val >> 8) & 0xff;
-    *ptr = (tANI_U8) (val) & 0xff;
+	*ptr++ = (tANI_U8) (val >> 24) & 0xff;
+	*ptr++ = (tANI_U8) (val >> 16) & 0xff;
+	*ptr++ = (tANI_U8) (val >> 8) & 0xff;
+	*ptr = (tANI_U8) (val) & 0xff;
 }
 
 // -------------------------------------------------------------------
@@ -367,11 +367,11 @@ sirStoreU32N(tANI_U8 *ptr, tANI_U32 val)
  * @return None
  */
 
-static inline void
+	static inline void
 sirStoreU16(tANI_U8 *ptr, tANI_U16 val)
 {
-    *ptr++ = val & 0xff;
-    *ptr = (val >> 8) & 0xff;
+	*ptr++ = val & 0xff;
+	*ptr = (val >> 8) & 0xff;
 }
 
 // -------------------------------------------------------------------
@@ -394,13 +394,13 @@ sirStoreU16(tANI_U8 *ptr, tANI_U16 val)
  * @return None
  */
 
-static inline void
+	static inline void
 sirStoreU32(tANI_U8 *ptr, tANI_U32 val)
 {
-    *ptr++ = (tANI_U8) val & 0xff;
-    *ptr++ = (tANI_U8) (val >> 8) & 0xff;
-    *ptr++ = (tANI_U8) (val >> 16) & 0xff;
-    *ptr = (tANI_U8) (val >> 24) & 0xff;
+	*ptr++ = (tANI_U8) val & 0xff;
+	*ptr++ = (tANI_U8) (val >> 8) & 0xff;
+	*ptr++ = (tANI_U8) (val >> 16) & 0xff;
+	*ptr = (tANI_U8) (val >> 24) & 0xff;
 }
 
 // -------------------------------------------------------------------
@@ -426,16 +426,16 @@ sirStoreU32(tANI_U8 *ptr, tANI_U32 val)
  * @return None
  */
 
-static inline void
+	static inline void
 sirStoreBufN(tANI_U8* pDst, tANI_U32* pSrc, tANI_U32 length)
 {
-    while (length)
-    {
-        sirStoreU32N(pDst, *pSrc);
-        pDst += 4;
-        pSrc++;
-        length--;
-    }
+	while (length)
+	{
+		sirStoreU32N(pDst, *pSrc);
+		pDst += 4;
+		pSrc++;
+		length--;
+	}
 }
 
 // -------------------------------------------------------------------
@@ -457,11 +457,11 @@ sirStoreBufN(tANI_U8* pDst, tANI_U32* pSrc, tANI_U32 length)
  * @return 16 bit value
  */
 
-static inline tANI_U16
+	static inline tANI_U16
 sirReadU16N(tANI_U8 *ptr)
 {
-    return(((*ptr) << 8) |
-           (*(ptr+1)));
+	return(((*ptr) << 8) |
+			(*(ptr+1)));
 }
 /**
  * sirSwapU32Buf
@@ -481,13 +481,13 @@ sirReadU16N(tANI_U8 *ptr)
  *
  */
 
-static inline void
+	static inline void
 sirSwapNStore(tANI_U32 *src, tANI_U32 *dst, tANI_U32 nWords)
 {
-    tANI_U32     i;
+	tANI_U32     i;
 
-    for (i=0; i < nWords; i++)
-        dst[i] = sirSwapU32(src[i]);
+	for (i=0; i < nWords; i++)
+		dst[i] = sirSwapU32(src[i]);
 }
 
 // -------------------------------------------------------------------
@@ -509,13 +509,13 @@ sirSwapNStore(tANI_U32 *src, tANI_U32 *dst, tANI_U32 nWords)
  * @return 32 bit value
  */
 
-static inline tANI_U32
+	static inline tANI_U32
 sirReadU32N(tANI_U8 *ptr)
 {
-    return((*(ptr) << 24) |
-           (*(ptr+1) << 16) |
-           (*(ptr+2) << 8) |
-           (*(ptr+3)));
+	return((*(ptr) << 24) |
+			(*(ptr+1) << 16) |
+			(*(ptr+2) << 8) |
+			(*(ptr+3)));
 }
 
 // -------------------------------------------------------------------
@@ -537,11 +537,11 @@ sirReadU32N(tANI_U8 *ptr)
  * @return 16 bit value
  */
 
-static inline tANI_U16
+	static inline tANI_U16
 sirReadU16(tANI_U8 *ptr)
 {
-    return((*ptr) |
-           (*(ptr+1) << 8));
+	return((*ptr) |
+			(*(ptr+1) << 8));
 }
 
 // -------------------------------------------------------------------
@@ -563,95 +563,95 @@ sirReadU16(tANI_U8 *ptr)
  * @return 32 bit value
  */
 
-static inline tANI_U32
+	static inline tANI_U32
 sirReadU32(tANI_U8 *ptr)
 {
-    return((*(ptr)) |
-           (*(ptr+1) << 8) |
-           (*(ptr+2) << 16) |
-           (*(ptr+3) << 24));
+	return((*(ptr)) |
+			(*(ptr+1) << 8) |
+			(*(ptr+2) << 16) |
+			(*(ptr+3) << 24));
 }
 
 // -------------------------------------------------------------------
 
 
 /// Copy a MAC address from 'from' to 'to'
-static inline void
+	static inline void
 sirCopyMacAddr(tANI_U8 to[], tANI_U8 from[])
 {
 #if defined( _X86_ )
-    tANI_U32 align = (0x3 & ((tANI_U32) to | (tANI_U32) from ));
-    if( align ==0){
-       *((tANI_U16 *) &(to[4])) = *((tANI_U16 *) &(from[4]));
-       *((tANI_U32 *) to) = *((tANI_U32 *) from);
-    }else if (align == 2){
-        *((tANI_U16 *) &to[4]) = *((tANI_U16 *) &from[4]);
-        *((tANI_U16 *) &to[2]) = *((tANI_U16 *) &from[2]);
-        *((tANI_U16 *) &to[0]) = *((tANI_U16 *) &from[0]);
-    }else{
-       to[5] = from[5];
-       to[4] = from[4];
-       to[3] = from[3];
-       to[2] = from[2];
-       to[1] = from[1];
-       to[0] = from[0];
-    }
+	tANI_U32 align = (0x3 & ((tANI_U32) to | (tANI_U32) from ));
+	if( align ==0){
+		*((tANI_U16 *) &(to[4])) = *((tANI_U16 *) &(from[4]));
+		*((tANI_U32 *) to) = *((tANI_U32 *) from);
+	}else if (align == 2){
+		*((tANI_U16 *) &to[4]) = *((tANI_U16 *) &from[4]);
+		*((tANI_U16 *) &to[2]) = *((tANI_U16 *) &from[2]);
+		*((tANI_U16 *) &to[0]) = *((tANI_U16 *) &from[0]);
+	}else{
+		to[5] = from[5];
+		to[4] = from[4];
+		to[3] = from[3];
+		to[2] = from[2];
+		to[1] = from[1];
+		to[0] = from[0];
+	}
 #else
-       to[0] = from[0];
-       to[1] = from[1];
-       to[2] = from[2];
-       to[3] = from[3];
-       to[4] = from[4];
-       to[5] = from[5];
+	to[0] = from[0];
+	to[1] = from[1];
+	to[2] = from[2];
+	to[3] = from[3];
+	to[4] = from[4];
+	to[5] = from[5];
 #endif
 }
 
-static inline tANI_U8
+	static inline tANI_U8
 sirCompareMacAddr(tANI_U8 addr1[], tANI_U8 addr2[])
 {
 #if defined( _X86_ )
-    tANI_U32 align = (0x3 & ((tANI_U32) addr1 | (tANI_U32) addr2 ));
+	tANI_U32 align = (0x3 & ((tANI_U32) addr1 | (tANI_U32) addr2 ));
 
-    if( align ==0){
-        return ((*((tANI_U16 *) &(addr1[4])) == *((tANI_U16 *) &(addr2[4])))&&
-                (*((tANI_U32 *) addr1) == *((tANI_U32 *) addr2)));
-    }else if(align == 2){
-        return ((*((tANI_U16 *) &addr1[4]) == *((tANI_U16 *) &addr2[4])) &&
-            (*((tANI_U16 *) &addr1[2]) == *((tANI_U16 *) &addr2[2])) &&
-            (*((tANI_U16 *) &addr1[0]) == *((tANI_U16 *) &addr2[0])));
-    }else{
-        return ( (addr1[5]==addr2[5])&&
-            (addr1[4]==addr2[4])&&
-            (addr1[3]==addr2[3])&&
-            (addr1[2]==addr2[2])&&
-            (addr1[1]==addr2[1])&&
-            (addr1[0]==addr2[0]));
-    }
+	if( align ==0){
+		return ((*((tANI_U16 *) &(addr1[4])) == *((tANI_U16 *) &(addr2[4])))&&
+				(*((tANI_U32 *) addr1) == *((tANI_U32 *) addr2)));
+	}else if(align == 2){
+		return ((*((tANI_U16 *) &addr1[4]) == *((tANI_U16 *) &addr2[4])) &&
+				(*((tANI_U16 *) &addr1[2]) == *((tANI_U16 *) &addr2[2])) &&
+				(*((tANI_U16 *) &addr1[0]) == *((tANI_U16 *) &addr2[0])));
+	}else{
+		return ( (addr1[5]==addr2[5])&&
+				(addr1[4]==addr2[4])&&
+				(addr1[3]==addr2[3])&&
+				(addr1[2]==addr2[2])&&
+				(addr1[1]==addr2[1])&&
+				(addr1[0]==addr2[0]));
+	}
 #else
-         return ( (addr1[0]==addr2[0])&&
-            (addr1[1]==addr2[1])&&
-            (addr1[2]==addr2[2])&&
-            (addr1[3]==addr2[3])&&
-            (addr1[4]==addr2[4])&&
-            (addr1[5]==addr2[5]));
+	return ( (addr1[0]==addr2[0])&&
+			(addr1[1]==addr2[1])&&
+			(addr1[2]==addr2[2])&&
+			(addr1[3]==addr2[3])&&
+			(addr1[4]==addr2[4])&&
+			(addr1[5]==addr2[5]));
 #endif
 }
 
 
 /*
-* converts tANI_U16 CW value to 4 bit value to be inserted in IE
-*/
+ * converts tANI_U16 CW value to 4 bit value to be inserted in IE
+ */
 static inline tANI_U8 convertCW(tANI_U16 cw)
 {
-    tANI_U8 val = 0;
-    while (cw > 0)
-        {
-            val++;
-            cw >>= 1;
-        }
-    if (val > 15)
-        return 0xF;
-    return val;
+	tANI_U8 val = 0;
+	while (cw > 0)
+	{
+		val++;
+		cw >>= 1;
+	}
+	if (val > 15)
+		return 0xF;
+	return val;
 }
 
 /* The user priority to AC mapping is such:
@@ -668,8 +668,8 @@ static inline tANI_U8 convertCW(tANI_U16 cw)
 
 /// Parse the next IE in a message
 extern tSirRetStatus sirParseNextIE(tpAniSirGlobal, tANI_U8 *pPayload,
-                                     tANI_U16 payloadLength, tANI_S16 lastType,
-                                     tANI_U8 *pType, tANI_U8 *pLength);
+		tANI_U16 payloadLength, tANI_S16 lastType,
+		tANI_U8 *pType, tANI_U8 *pLength);
 
 /// Check if the given channel is 11b channel
 #define SIR_IS_CHANNEL_11B(chId)  (chId <= 14)
@@ -692,21 +692,21 @@ extern tSirRetStatus sirParseNextIE(tpAniSirGlobal, tANI_U8 *pPayload,
  * @param  tANI_S32 input
  * @return rounded number
  */
-static inline tANI_S32
+	static inline tANI_S32
 halRoundS32(tANI_S32 p)
 {
-    tANI_S32  k, i, j;
+	tANI_S32  k, i, j;
 
-    i = p/10;
-    j = p%10;
-    if (p > 0)
-        k = i + (j > 4 ? 1 : 0);
-    else if (p < 0)
-        k = i + (j < -5 ? -1 : 0);
-    else
-        k = p;
+	i = p/10;
+	j = p%10;
+	if (p > 0)
+		k = i + (j > 4 ? 1 : 0);
+	else if (p < 0)
+		k = i + (j < -5 ? -1 : 0);
+	else
+		k = p;
 
-        return(k);
+	return(k);
 }
 
 /* New functions for endianness conversion */
@@ -730,8 +730,8 @@ halRoundS32(tANI_S32 p)
 void ConverttoBigEndian(void *ptr, tANI_U16 size);
 void CreateScanCtsFrame(tpAniSirGlobal pMac, tSirMacMgmtHdr *macMgmtHdr, tSirMacAddr selfMac);
 void CreateScanDataNullFrame(tpAniSirGlobal pMac, tSirMacMgmtHdr *macMgmtHdr,
-                             tANI_U8 pwrMgmt, tSirMacAddr bssid,
-                             tSirMacAddr selfMacAddr);
+		tANI_U8 pwrMgmt, tSirMacAddr bssid,
+		tSirMacAddr selfMacAddr);
 void CreateInitScanRawFrame(tpAniSirGlobal pMac, tSirMacMgmtHdr *macMgmtHdr, tBssSystemRole role);
 void CreateFinishScanRawFrame(tpAniSirGlobal pMac, tSirMacMgmtHdr *macMgmtHdr, tBssSystemRole role);
 

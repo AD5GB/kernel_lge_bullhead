@@ -27,7 +27,9 @@
 
 #ifdef CONFIG_SYSFS
 static const char fmt_hex[] = "%#x\n";
+/* RDD UNUSED
 static const char fmt_long_hex[] = "%#lx\n";
+*/
 static const char fmt_dec[] = "%d\n";
 static const char fmt_udec[] = "%u\n";
 static const char fmt_ulong[] = "%lu\n";

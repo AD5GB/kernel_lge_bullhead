@@ -58,11 +58,11 @@ static unsigned int ghsuart_data_rmnet_rx_q_size = GHSUART_DATA_RMNET_RX_Q_SIZE;
 module_param(ghsuart_data_rmnet_rx_q_size, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsuart_data_serial_tx_q_size =
-					GHSUART_DATA_SERIAL_TX_Q_SIZE;
+GHSUART_DATA_SERIAL_TX_Q_SIZE;
 module_param(ghsuart_data_serial_tx_q_size, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsuart_data_serial_rx_q_size =
-				GHSUART_DATA_SERIAL_RX_Q_SIZE;
+GHSUART_DATA_SERIAL_RX_Q_SIZE;
 module_param(ghsuart_data_serial_rx_q_size, uint, S_IRUGO | S_IWUSR);
 
 static unsigned int ghsuart_data_rx_req_size = GHSUART_DATA_RX_REQ_SIZE;
@@ -133,7 +133,7 @@ static struct {
 static void ghsuart_data_start_rx(struct ghsuart_data_port *port);
 
 static void ghsuart_data_free_requests(struct usb_ep *ep,
-				 struct list_head *head)
+		struct list_head *head)
 {
 	struct usb_request	*req;
 
@@ -268,26 +268,26 @@ static void ghsuart_data_write_tomdm(struct work_struct *w)
 }
 
 static void ghsuart_data_epin_complete(struct usb_ep *ep,
-				struct usb_request *req)
+		struct usb_request *req)
 {
 	struct ghsuart_data_port	*port = ep->driver_data;
 	struct sk_buff		*skb = req->context;
 	int			status = req->status;
 
 	switch (status) {
-	case 0:
-		/* successful completion */
-		break;
-	case -ECONNRESET:
-	case -ESHUTDOWN:
-		/* connection gone */
-		dev_kfree_skb_any(skb);
-		req->buf = 0;
-		usb_ep_free_request(ep, req);
-		return;
-	default:
-		pr_err("%s: data tx ep error %d\n", __func__, status);
-		break;
+		case 0:
+			/* successful completion */
+			break;
+		case -ECONNRESET:
+		case -ESHUTDOWN:
+			/* connection gone */
+			dev_kfree_skb_any(skb);
+			req->buf = 0;
+			usb_ep_free_request(ep, req);
+			return;
+		default:
+			pr_err("%s: data tx ep error %d\n", __func__, status);
+			break;
 	}
 
 	dev_kfree_skb_any(skb);
@@ -299,7 +299,7 @@ static void ghsuart_data_epin_complete(struct usb_ep *ep,
 	queue_work(port->wq, &port->write_tohost_w);
 }
 
-static void
+	static void
 ghsuart_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct ghsuart_data_port	*port = ep->driver_data;
@@ -308,24 +308,24 @@ ghsuart_data_epout_complete(struct usb_ep *ep, struct usb_request *req)
 	int			queue = 0;
 
 	switch (status) {
-	case 0:
-		skb_put(skb, req->actual);
-		queue = 1;
-		break;
-	case -ECONNRESET:
-	case -ESHUTDOWN:
-		/* cable disconnection */
-		dev_kfree_skb_any(skb);
-		req->buf = 0;
-		usb_ep_free_request(ep, req);
-		return;
-	default:
-		pr_err_ratelimited("%s: %s response error %d, %d/%d\n",
+		case 0:
+			skb_put(skb, req->actual);
+			queue = 1;
+			break;
+		case -ECONNRESET:
+		case -ESHUTDOWN:
+			/* cable disconnection */
+			dev_kfree_skb_any(skb);
+			req->buf = 0;
+			usb_ep_free_request(ep, req);
+			return;
+		default:
+			pr_err_ratelimited("%s: %s response error %d, %d/%d\n",
 					__func__, ep->name, status,
-				req->actual, req->length);
-		dev_kfree_skb_any(skb);
-		list_add_tail(&req->list, &port->rx_idle);
-		return;
+					req->actual, req->length);
+			dev_kfree_skb_any(skb);
+			list_add_tail(&req->list, &port->rx_idle);
+			return;
 	}
 
 	spin_lock(&port->rx_lock);
@@ -364,7 +364,7 @@ static void ghsuart_data_start_rx(struct ghsuart_data_port *port)
 	while (atomic_read(&port->connected) && !list_empty(&port->rx_idle)) {
 
 		req = list_first_entry(&port->rx_idle,
-					struct usb_request, list);
+				struct usb_request, list);
 
 		skb = alloc_skb(ghsuart_data_rx_req_size, GFP_ATOMIC);
 		if (!skb)
@@ -411,7 +411,7 @@ static void ghsuart_data_start_io(struct ghsuart_data_port *port)
 	}
 
 	ret = ghsuart_data_alloc_requests(ep, &port->rx_idle,
-		port->rx_q_size, ghsuart_data_epout_complete, GFP_ATOMIC);
+			port->rx_q_size, ghsuart_data_epout_complete, GFP_ATOMIC);
 	if (ret) {
 		pr_err("%s: rx req allocation failed\n", __func__);
 		spin_unlock_irqrestore(&port->rx_lock, flags);
@@ -427,7 +427,7 @@ static void ghsuart_data_start_io(struct ghsuart_data_port *port)
 	}
 
 	ret = ghsuart_data_alloc_requests(ep, &port->tx_idle,
-		port->tx_q_size, ghsuart_data_epin_complete, GFP_ATOMIC);
+			port->tx_q_size, ghsuart_data_epin_complete, GFP_ATOMIC);
 	if (ret) {
 		pr_err("%s: tx req allocation failed\n", __func__);
 		ghsuart_data_free_requests(ep, &port->rx_idle);
@@ -447,14 +447,14 @@ static void ghsuart_dunctrl_status(void *ctxt, unsigned int ctrl_bits)
 	unsigned long	flags;
 
 	pr_debug("%s - input control lines: dcd%c dsr%c break%c "
-	"ring%c framing%c parity%c overrun%c\n", __func__,
-	ctrl_bits & ACM_CTRL_DCD ? '+' : '-',
-	ctrl_bits & ACM_CTRL_DSR ? '+' : '-',
-	ctrl_bits & ACM_CTRL_BRK ? '+' : '-',
-	ctrl_bits & ACM_CTRL_RI  ? '+' : '-',
-	ctrl_bits & ACM_CTRL_FRAMING ? '+' : '-',
-	ctrl_bits & ACM_CTRL_PARITY ? '+' : '-',
-	ctrl_bits & ACM_CTRL_OVERRUN ? '+' : '-');
+			"ring%c framing%c parity%c overrun%c\n", __func__,
+			ctrl_bits & ACM_CTRL_DCD ? '+' : '-',
+			ctrl_bits & ACM_CTRL_DSR ? '+' : '-',
+			ctrl_bits & ACM_CTRL_BRK ? '+' : '-',
+			ctrl_bits & ACM_CTRL_RI  ? '+' : '-',
+			ctrl_bits & ACM_CTRL_FRAMING ? '+' : '-',
+			ctrl_bits & ACM_CTRL_PARITY ? '+' : '-',
+			ctrl_bits & ACM_CTRL_OVERRUN ? '+' : '-');
 
 	spin_lock_irqsave(&port->port_lock, flags);
 	port->cbits_tohost = ctrl_bits;
@@ -467,37 +467,37 @@ static void ghsuart_dunctrl_status(void *ctxt, unsigned int ctrl_bits)
 const char *event_string(int event_type)
 {
 	switch (event_type) {
-	case SMUX_CONNECTED:
-		return "SMUX_CONNECTED";
-	case SMUX_DISCONNECTED:
-		return "SMUX_DISCONNECTED";
-	case SMUX_READ_DONE:
-		return "SMUX_READ_DONE";
-	case SMUX_READ_FAIL:
-		return "SMUX_READ_FAIL";
-	case SMUX_WRITE_DONE:
-		return "SMUX_WRITE_DONE";
-	case SMUX_WRITE_FAIL:
-		return "SMUX_WRITE_FAIL";
-	case SMUX_HIGH_WM_HIT:
-		return "SMUX_HIGH_WM_HIT";
-	case SMUX_LOW_WM_HIT:
-		return "SMUX_LOW_WM_HIT";
-	case SMUX_TIOCM_UPDATE:
-		return "SMUX_TIOCM_UPDATE";
-	default:
-		return "UNDEFINED";
+		case SMUX_CONNECTED:
+			return "SMUX_CONNECTED";
+		case SMUX_DISCONNECTED:
+			return "SMUX_DISCONNECTED";
+		case SMUX_READ_DONE:
+			return "SMUX_READ_DONE";
+		case SMUX_READ_FAIL:
+			return "SMUX_READ_FAIL";
+		case SMUX_WRITE_DONE:
+			return "SMUX_WRITE_DONE";
+		case SMUX_WRITE_FAIL:
+			return "SMUX_WRITE_FAIL";
+		case SMUX_HIGH_WM_HIT:
+			return "SMUX_HIGH_WM_HIT";
+		case SMUX_LOW_WM_HIT:
+			return "SMUX_LOW_WM_HIT";
+		case SMUX_TIOCM_UPDATE:
+			return "SMUX_TIOCM_UPDATE";
+		default:
+			return "UNDEFINED";
 	}
 }
 
 static void ghsuart_notify_event(void *priv, int event_type,
-				const void *metadata)
+		const void *metadata)
 {
 	struct ghsuart_data_port	*port = priv;
 	struct smux_meta_write *meta_write =
-				(struct smux_meta_write *) metadata;
+		(struct smux_meta_write *) metadata;
 	struct smux_meta_read *meta_read =
-				(struct smux_meta_read *) metadata;
+		(struct smux_meta_read *) metadata;
 	struct sk_buff		*skb;
 	unsigned long		flags;
 	unsigned int		cbits;
@@ -505,73 +505,73 @@ static void ghsuart_notify_event(void *priv, int event_type,
 
 	pr_debug("%s: event type: %s ", __func__, event_string(event_type));
 	switch (event_type) {
-	case SMUX_LOCAL_CLOSED:
-		clear_bit(CH_OPENED, &port->channel_sts);
-		complete(&port->close_complete);
-		break;
-	case SMUX_CONNECTED:
-		set_bit(CH_CONNECTED, &port->channel_sts);
-		if (port->gtype == USB_GADGET_SERIAL) {
-			cbits = msm_smux_tiocm_get(port->ch_id);
-			if (cbits & ACM_CTRL_DCD) {
-				gser = port->port_usb;
-				if (gser && gser->connect)
-					gser->connect(gser);
+		case SMUX_LOCAL_CLOSED:
+			clear_bit(CH_OPENED, &port->channel_sts);
+			complete(&port->close_complete);
+			break;
+		case SMUX_CONNECTED:
+			set_bit(CH_CONNECTED, &port->channel_sts);
+			if (port->gtype == USB_GADGET_SERIAL) {
+				cbits = msm_smux_tiocm_get(port->ch_id);
+				if (cbits & ACM_CTRL_DCD) {
+					gser = port->port_usb;
+					if (gser && gser->connect)
+						gser->connect(gser);
+				}
 			}
-		}
-		ghsuart_data_start_io(port);
-		break;
-	case SMUX_DISCONNECTED:
-		clear_bit(CH_CONNECTED, &port->channel_sts);
-		break;
-	case SMUX_READ_DONE:
-		skb = meta_read->pkt_priv;
-		skb->data = meta_read->buffer;
-		skb->len = meta_read->len;
-		spin_lock_irqsave(&port->tx_lock, flags);
-		__skb_queue_tail(&port->tx_skb_q, skb);
-		spin_unlock_irqrestore(&port->tx_lock, flags);
-		queue_work(port->wq, &port->write_tohost_w);
-		break;
-	case SMUX_WRITE_DONE:
-		skb = meta_write->pkt_priv;
-		skb->data = meta_write->buffer;
-		dev_kfree_skb_any(skb);
-		queue_work(port->wq, &port->write_tomdm_w);
-		break;
-	case SMUX_READ_FAIL:
-		skb = meta_read->pkt_priv;
-		skb->data = meta_read->buffer;
-		dev_kfree_skb_any(skb);
-		break;
-	case SMUX_WRITE_FAIL:
-		skb = meta_write->pkt_priv;
-		skb->data = meta_write->buffer;
-		dev_kfree_skb_any(skb);
-		break;
-	case SMUX_HIGH_WM_HIT:
-		spin_lock_irqsave(&port->rx_lock, flags);
-		set_bit(TX_THROTTLED, &port->flags);
-		spin_unlock_irqrestore(&port->rx_lock, flags);
-	case SMUX_LOW_WM_HIT:
-		spin_lock_irqsave(&port->rx_lock, flags);
-		clear_bit(TX_THROTTLED, &port->flags);
-		spin_unlock_irqrestore(&port->rx_lock, flags);
-		queue_work(port->wq, &port->write_tomdm_w);
-		break;
-	case SMUX_TIOCM_UPDATE:
-		if (port->gtype == USB_GADGET_SERIAL) {
-			cbits = msm_smux_tiocm_get(port->ch_id);
-			ghsuart_dunctrl_status(port, cbits);
-		}
-		break;
-	default:
-		pr_err("%s:wrong event recieved\n", __func__);
+			ghsuart_data_start_io(port);
+			break;
+		case SMUX_DISCONNECTED:
+			clear_bit(CH_CONNECTED, &port->channel_sts);
+			break;
+		case SMUX_READ_DONE:
+			skb = meta_read->pkt_priv;
+			skb->data = meta_read->buffer;
+			skb->len = meta_read->len;
+			spin_lock_irqsave(&port->tx_lock, flags);
+			__skb_queue_tail(&port->tx_skb_q, skb);
+			spin_unlock_irqrestore(&port->tx_lock, flags);
+			queue_work(port->wq, &port->write_tohost_w);
+			break;
+		case SMUX_WRITE_DONE:
+			skb = meta_write->pkt_priv;
+			skb->data = meta_write->buffer;
+			dev_kfree_skb_any(skb);
+			queue_work(port->wq, &port->write_tomdm_w);
+			break;
+		case SMUX_READ_FAIL:
+			skb = meta_read->pkt_priv;
+			skb->data = meta_read->buffer;
+			dev_kfree_skb_any(skb);
+			break;
+		case SMUX_WRITE_FAIL:
+			skb = meta_write->pkt_priv;
+			skb->data = meta_write->buffer;
+			dev_kfree_skb_any(skb);
+			break;
+		case SMUX_HIGH_WM_HIT:
+			spin_lock_irqsave(&port->rx_lock, flags);
+			set_bit(TX_THROTTLED, &port->flags);
+			spin_unlock_irqrestore(&port->rx_lock, flags);
+		case SMUX_LOW_WM_HIT:
+			spin_lock_irqsave(&port->rx_lock, flags);
+			clear_bit(TX_THROTTLED, &port->flags);
+			spin_unlock_irqrestore(&port->rx_lock, flags);
+			queue_work(port->wq, &port->write_tomdm_w);
+			break;
+		case SMUX_TIOCM_UPDATE:
+			if (port->gtype == USB_GADGET_SERIAL) {
+				cbits = msm_smux_tiocm_get(port->ch_id);
+				ghsuart_dunctrl_status(port, cbits);
+			}
+			break;
+		default:
+			pr_err("%s:wrong event recieved\n", __func__);
 	}
 }
 
 static int ghsuart_get_rx_buffer(void *priv, void **pkt_priv,
-			void **buffer, int size)
+		void **buffer, int size)
 {
 	struct sk_buff		*skb;
 
@@ -591,7 +591,7 @@ static void ghsuart_data_connect_w(struct work_struct *w)
 	int			ret;
 
 	if (!port || !atomic_read(&port->connected) ||
-		!test_bit(CH_READY, &port->channel_sts))
+			!test_bit(CH_READY, &port->channel_sts))
 		return;
 
 	pr_debug("%s: port:%p\n", __func__, port);
@@ -605,7 +605,7 @@ static void ghsuart_data_connect_w(struct work_struct *w)
 		}
 	}
 	ret = msm_smux_open(port->ch_id, port, &ghsuart_notify_event,
-				&ghsuart_get_rx_buffer);
+			&ghsuart_get_rx_buffer);
 	if (ret) {
 		pr_err("%s: unable to open smux ch:%d err:%d\n",
 				__func__, port->ch_id, ret);
@@ -665,7 +665,7 @@ static int ghsuart_data_probe(struct platform_device *pdev)
 	struct ghsuart_data_port *port;
 
 	pr_debug("%s: name:%s num_data_ports= %d\n",
-		__func__, pdev->name, num_data_ports);
+			__func__, pdev->name, num_data_ports);
 
 	if (pdev->id >= num_data_ports) {
 		pr_err("%s: invalid port: %d\n", __func__, pdev->id);
@@ -744,7 +744,7 @@ static void ghsuart_data_port_free(int portno)
 		platform_driver_unregister(pdrv);
 }
 
-static void
+	static void
 ghsuart_send_controlbits_tomodem(void *gptr, u8 portno, int cbits)
 {
 	struct ghsuart_data_port	*port;
@@ -793,7 +793,7 @@ static int ghsuart_data_port_alloc(unsigned port_num, enum gadget_type gtype)
 	port->wq = create_singlethread_workqueue(ghsuart_data_names[port_num]);
 	if (!port->wq) {
 		pr_err("%s: Unable to create workqueue:%s\n",
-			__func__, ghsuart_data_names[port_num]);
+				__func__, ghsuart_data_names[port_num]);
 		kfree(port);
 		return -ENOMEM;
 	}
@@ -987,7 +987,7 @@ fail:
 
 #define DEBUG_BUF_SIZE 1024
 static ssize_t ghsuart_data_read_stats(struct file *file,
-	char __user *ubuf, size_t count, loff_t *ppos)
+		char __user *ubuf, size_t count, loff_t *ppos)
 {
 	struct ghsuart_data_port	*port;
 	struct platform_driver	*pdrv;
@@ -1051,7 +1051,7 @@ static ssize_t ghsuart_data_read_stats(struct file *file,
 }
 
 static ssize_t ghsuart_data_reset_stats(struct file *file,
-	const char __user *buf, size_t count, loff_t *ppos)
+		const char __user *buf, size_t count, loff_t *ppos)
 {
 	struct ghsuart_data_port	*port;
 	int			i;
@@ -1089,7 +1089,7 @@ static int ghsuart_data_debugfs_init(void)
 		return -ENODEV;
 
 	ghsuart_data_dfile = debugfs_create_file("status", S_IRUGO | S_IWUSR,
-				 ghsuart_data_dent, 0, &ghsuart_data_stats_ops);
+			ghsuart_data_dent, 0, &ghsuart_data_stats_ops);
 	if (!ghsuart_data_dfile || IS_ERR(ghsuart_data_dfile)) {
 		debugfs_remove(ghsuart_data_dent);
 		return -ENODEV;
@@ -1135,7 +1135,7 @@ int ghsuart_data_setup(unsigned num_ports, enum gadget_type gtype)
 free_ports:
 	for (i = first_port_id; i < num_data_ports; i++)
 		ghsuart_data_port_free(i);
-		num_data_ports = first_port_id;
+	num_data_ports = first_port_id;
 
 	return ret;
 }

@@ -3137,6 +3137,7 @@ limAddStaSelf(tpAniSirGlobal pMac,tANI_U16 staIdx, tANI_U8 updateSta, tpPESessio
 
     if(wlan_cfgGetInt(pMac, WNI_CFG_LISTEN_INTERVAL, &listenInterval) != eSIR_SUCCESS)
        limLog(pMac, LOGP, FL("Couldn't get LISTEN_INTERVAL"));
+
     pAddStaParams->listenInterval = (tANI_U16)listenInterval;
 
     if (VOS_P2P_CLIENT_MODE == psessionEntry->pePersona)
@@ -4261,7 +4262,8 @@ tSirRetStatus limStaSendAddBssPreAssoc( tpAniSirGlobal pMac, tANI_U8 updateEntry
 
     if(pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE)
         limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
-        vos_mem_copy(pAddBssParams->bssId, bssDescription->bssId,
+	 
+    vos_mem_copy(pAddBssParams->bssId, bssDescription->bssId,
                      sizeof(tSirMacAddr));
 
     // Fill in tAddBssParams selfMacAddr

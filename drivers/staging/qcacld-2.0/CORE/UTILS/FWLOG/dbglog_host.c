@@ -1410,7 +1410,10 @@ int dbglog_report_enable(wmi_unified_t  wmi_handle, bool isenable)
 {
     int bitmap[2] = {0};
 
+	 /* RDD - DAMMIT! TRUE is a boolean expression! 
     if (isenable > TRUE) {
+	 */
+    if (isenable != TRUE) {
         AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("dbglog_report_enable:Invalid value %d\n",
         isenable));
         return -EINVAL;
